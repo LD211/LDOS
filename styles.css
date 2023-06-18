@@ -1,13 +1,109 @@
 /* yes */
 body {
-  background-image: url('./images/replace.png');
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height: 100vh;
+  margin:0;
+  background-image: url('./images/rainbow.png');
 }
+
+button {
+  background: transparent;
+  border:none;
+}
+
 #LDbar {
   position:fixed;
+  color:white;
+  font-family: "iosevka";
   top:0;
   left:0;
-  width:100%;
+  width:99%;
   height:20px;
+  border-radius:6px;
+  margin:5px;
   background-color:rgba(32,32,35,0.5);
   z-index:1;
+}
+
+#terminal {
+  display:none;
+  background-color:rgba(25,26,37,0.7) !important;
+  color:white;
+}
+
+#terminaltext {
+  font-family: "iosevka"; 
+  color:white;
+  margin-left:10px;
+  width: 100%;
+  background-color:rgba(25,26,37,0);
+  border:none;
+  outline:none;
+}
+
+.fa-user {
+  color:white;
+  margin-left:15px;
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+#searchbar {
+  display:none;
+  animation: 1s ease-out 0s 1 slideDown;
+  animation-fill-mode: forwards;
+  animation-play-state:paused;
+  background-color:rgba(25,26,37,0.7);
+  flex-direction: column;
+  padding:10px;
+  height:500px;
+  width:500px;
+  border:2px solid white;
+  border-radius:10px;
+}
+
+.fa-magnifying-glass {
+  position:absolute;
+  top:13px;
+  left:3px;
+  color:white;
+}
+
+#inputBar {
+  font-family: "iosevka"; 
+  color:white;
+  margin-left:13px;
+  background-color:rgba(25,26,37,0);
+  border-radius: 5px;
+}
+
+
+@font-face {
+  font-family: "aller";
+  src: url('./fonts/aller.ttf');
+}
+@font-face {
+  font-family: "iosevka";
+  src: url('./fonts/iosevka.ttf');
+}
+@font-face {
+  font-family: "Venacti";
+  src: url('./fonts/Venacti.ttf');
+}
+@font-face {
+  font-family: "smallpixel";
+  src: url('./fonts/smallpixel.ttf');
+}
+@font-face {
+  font-family: "ttyclock";
+  src: url('./fonts/ttyclock.ttf');
 }
