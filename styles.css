@@ -28,19 +28,58 @@ button {
 }
 
 #terminal {
+  position:relative;
   display:none;
   background-color:rgba(25,26,37,0.7) !important;
+  border-radius:6px;
+  border: 1px solid white;
   color:white;
+  z-index:2;
+}
+
+#ps1, #terminaltext {
+  display:inline-block;
+}
+
+.bracket1, .bracket2 {
+  color: red;
+}
+
+.user {
+  color: gold;
+}
+
+.at {
+  color: lime;
+}
+
+.LDTerminal {
+  color: #86ccda;
+}
+
+.filepth {
+  color:pink;
 }
 
 #terminaltext {
   font-family: "iosevka"; 
   color:white;
-  margin-left:10px;
-  width: 100%;
+  font-size: 15px;
+  width: 50%;
   background-color:rgba(25,26,37,0);
   border:none;
   outline:none;
+}
+
+#terminaloutput {
+  font-size: 15px;
+  font-family: "iosevka";
+  color:white;
+  margin-left:2px;
+}
+
+#ps1 {
+  font-family:"iosevka";
 }
 
 .fa-user {
@@ -69,6 +108,7 @@ button {
   width:500px;
   border:2px solid white;
   border-radius:10px;
+  z-index:3;
 }
 
 .fa-magnifying-glass {
