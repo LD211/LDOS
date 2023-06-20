@@ -1,4 +1,5 @@
 console.log("LDOS");
+let processCount = 0;
 const desktop = document.getElementById("desktop");
 const ldBar = document.getElementById("LDbar");
 const programs = document.getElementById("programs");
@@ -33,7 +34,8 @@ let fileSystem = {
     },
   },
 };
-let processes = 0;
+let currentDirectory = fileSystem;
+let processes = [];
 const apps = [
   "terminal",
   "photos",
@@ -48,10 +50,18 @@ window.addEventListener("keydown", (event) => {
     if (searchBar.style.display !== "flex") {
       openSearchBar();
     } else {
-      closeSearchBar();
+      closeSearchBar(searchBar);
     }
   } else if (searchBar.style.display === "flex" && event.key === "Escape") {
-    closeSearchBar();
+    closeSearchBar(searchBar);
+  } else if (event.ctrlKey && event.altKey) {
+    openTerminal(terminal.cloneNode(true));
+  } else if (event.ctrlKey && event.key === "l") {
+    event.preventDefault();
+    focusRight();
+  } else if (event.ctrlKey && event.key === "h") {
+    event.preventDefault();
+    focusLeft();
   }
 });
 
@@ -63,40 +73,106 @@ inputBar.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
     interpretSearchValue(inputBar.value.toLowerCase());
     inputBar.value = "";
-    closeSearchBar();
+    closeSearchBar(searchBar);
   }
 });
+
+function focusRight() {
+  if (processes.length < 2) return;
+  for (let i = 0; i < processes.length; i++) {
+    if (
+      processes[i] === document.activeElement.parentElement.id &&
+      i !== processes.length - 1
+    ) {
+      document.getElementById(processes[i + 1]).querySelector("input").focus();
+    }
+  }
+}
+
+function focusLeft() {
+  if (processes.length < 2) return;
+  for (let i = 0; i < processes.length; i++) {
+    if (processes[i] === document.activeElement.parentElement.id && i !== 0) {
+      document.getElementById(processes[i - 1]).querySelector("input").focus();
+    }
+  }
+}
 
 async function interpretSearchValue(value) {
   await sleep(750);
   if (value === "terminal") {
-    openTerminal();
+    openTerminal(terminal.cloneNode(true));
   }
 }
 
-function openTerminal() {
-  tileProcess(terminal);
-  const terminalText = document.getElementById("terminaltext");
+function openTerminal(terminalInstance) {
+  terminalInstance.id = "process" + processCount++;
+  terminalInstance.style.position = "relative";
+  terminalInstance.style.backgroundColor = "rgba(25,26,37,0.7)";
+  terminalInstance.style.borderRadius = "6px";
+  terminalInstance.style.border = "1px solid white";
+  terminalInstance.style.color = "white";
+  terminalInstance.style.zIndex = "2";
+  terminalInstance.style.margin = "3px";
+  document.body.appendChild(terminalInstance);
+  processes.push(terminalInstance.id);
+  tileProcess(document.getElementById(terminalInstance.id));
+  const terminalText = document.getElementById(terminalInstance.id)
+    .querySelector("input");
   terminalText.focus();
   terminalText.addEventListener("input", (event) => {
   });
   terminalText.addEventListener("keydown", (enter) => {
     if (enter.key === "Enter") {
-      interpretTerminalCommand(terminalText.value);
+      interpretTerminalCommand(
+        document.getElementById(terminalInstance.id),
+        terminalText.value,
+        terminalInstance.querySelector("#terminaloutput"),
+      );
       terminalText.value = "";
+    } else if (enter.ctrlKey && enter.key === "0") {
+      enter.preventDefault();
+      //fadeOutBar(document.getElementById(terminalInstance.id));
+      closeTerminal(document.getElementById(terminalInstance.id));
     }
   });
 
-  terminal.addEventListener("click", () => {
+  terminalInstance.addEventListener("click", () => {
     terminalText.focus();
+  });
+  terminalText.addEventListener("focus", () => {
+    document.getElementById(terminalInstance.id).style.border =
+      "1px solid white";
+  });
+  terminalText.addEventListener("blur", () => {
+    document.getElementById(terminalInstance.id).style.border =
+      "1px solid transparent";
   });
 }
 
-function cd(directory, currentDirectory) {
+function closeTerminal(id) {
+  processes = processes.filter((item) => item !== id.id);
+  fadeOutBar(id);
+  const focus = document.getElementById(processes[processes.length - 1]);
+  focus.querySelector("input").focus();
+  console.log(focus);
+  console.log(id);
+}
+
+function cd(directory) {
   if (directory === "..") {
-    if (currentDirectory.name !== "/") {
+    if (currentDirectory.name !== "root") {
       currentDirectory = currentDirectory.parent;
     }
+  } else if (directory.split("/" > 1)) {
+  }
+}
+
+function ls(directory) {
+  if (directory === ".." && currentDirectory.name !== "root") {
+    console.log(currentDirectory.parent);
+  } else if (directory.split("/") > 1) {
+    //handle multiple files
   }
 }
 
@@ -104,33 +180,56 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function interpretTerminalCommand(command) {
-  const terminalOutput = document.getElementById("terminaloutput");
+function interpretTerminalCommand(process, command, output) {
   let ps1 = document.getElementById("ps1");
   let clone = ps1.cloneNode(true);
-  document.getElementById("terminaloutput").appendChild(clone);
-
+  output.appendChild(clone);
   if (command === "hi") {
-    commandOutput("hello");
+    commandOutput("hello", output);
   } else if (command === "clear") {
-    terminalOutput.innerHTML = "";
+    output.innerHTML = "";
   } else if (command === "whoami") {
-    commandOutput("idfk");
+    commandOutput("idfk", output);
+  } else if (command === "clock") {
+    clockMethod(process, output);
   } else {
-    commandOutput("");
+    commandOutput("Unknown command", output);
   }
 }
 
-function commandOutput(outputs) {
-  const terminalOutput = document.getElementById("terminaloutput");
-  terminalOutput.innerHTML += "<br>" + outputs + "<br>";
+function commandOutput(outputs, process) {
+  process.innerHTML += "<br>" + outputs + "<br>";
+}
+
+function clockMethod(process, output) {
+  output.innerHTML = "";
+  //output.style.fontFamily = "ttyclock";
+  //output.style.fontSize = "50px";
+  //output.innerHTML = "5:57";
+  const clock = document.createElement("div");
+  clock.style.position = "absolute";
+  clock.style.top = "50%";
+  clock.style.transform = "translate(-50%, -50%)";
+  clock.style.left = "50%";
+  clock.textContent = getTime();
+  clock.style.fontFamily = "ttyclock";
+  clock.style.fontSize = "100px";
+  process.appendChild(clock);
+}
+
+function getTime() {
+  let date = new Date();
+  let hours = date.getHours();
+  if (hours > 12) hours -= 12;
+  let minutes = date.getMinutes();
+  if (minutes < 10) minutes = "0" + minutes;
+  return hours + ":" + "" + minutes;
 }
 
 function tileProcess(process) {
   process.style.display = "block";
   let width = 0;
   let height = 0;
-  console.log(window.innerWidth);
   let getBigger = setInterval(function () {
     if (width > window.innerWidth - 21 || height > window.innerHeight - 21) {
       clearInterval(getBigger);
@@ -141,7 +240,6 @@ function tileProcess(process) {
       process.style.height = height + "px";
       width += 20;
       height += 20;
-      console.log("hi");
     }
   }, 3);
 }
@@ -152,8 +250,8 @@ function openSearchBar() {
   inputBar.focus();
 }
 
-function closeSearchBar() {
-  fadeOutBar(searchBar);
+function closeSearchBar(element) {
+  fadeOutBar(element);
 }
 
 function fadeOutBar(element) {
@@ -161,11 +259,11 @@ function fadeOutBar(element) {
   let fadeOut = setInterval(function () {
     if (opacity <= 0) {
       clearInterval(fadeOut);
-      searchBar.style.display = "none";
-      searchBar.style.opacity = "1";
+      element.style.display = "none";
+      element.style.opacity = "1";
     } else {
       opacity -= 0.01;
-      searchBar.style.opacity = opacity;
+      element.style.opacity = opacity;
     }
   }, 10);
 }
