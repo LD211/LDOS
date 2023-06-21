@@ -1,11 +1,13 @@
 console.log("LDOS");
 let processCount = 0;
 const desktop = document.getElementById("desktop");
+const chromeid = document.getElementById("chrome");
 const ldBar = document.getElementById("LDbar");
 const programs = document.getElementById("programs");
 const terminal = document.getElementById("terminal");
 const searchBar = document.getElementById("searchbar");
 const inputBar = document.getElementById("inputBar");
+const profileButton = document.getElementById("profilebutton");
 let fileSystem = {
   name: "root",
   type: "directory",
@@ -62,7 +64,14 @@ window.addEventListener("keydown", (event) => {
   } else if (event.ctrlKey && event.key === "h") {
     event.preventDefault();
     focusLeft();
+  } else if (event.ctrlKey && event.key === "b") {
+    event.preventDefault();
+    openChrome(chromeid.cloneNode(true));
   }
+});
+
+profileButton.addEventListener("click", () => {
+  openSearchBar();
 });
 
 inputBar.addEventListener("input", function (e) {
@@ -102,7 +111,26 @@ async function interpretSearchValue(value) {
   await sleep(750);
   if (value === "terminal") {
     openTerminal(terminal.cloneNode(true));
+  } else if (value === "chrome") {
+    openChrome(chromeid.cloneNode(true));
   }
+}
+
+function openChrome(chromeInstance) {
+  chromeInstance.id = "process" + processCount++;
+  chromeInstance.style.position = "relative";
+  chromeInstance.style.backgroundColor = "rgba(25,26,37,0.7)";
+  chromeInstance.style.borderRadius = "6px";
+  chromeInstance.style.border = "1px solid white";
+  chromeInstance.style.color = "white";
+  chromeInstance.style.zIndex = "2";
+  chromeInstance.style.margin = "3px";
+  document.body.appendChild(chromeInstance);
+  processes.push(chromeInstance.id);
+  tileProcess(document.getElementById(chromeInstance.id));
+  chromeInstance.querySelector("iframe").style.width = "100%";
+  chromeInstance.querySelector("iframe").style.height = "100%";
+  chromeInstance.querySelector("iframe").focus();
 }
 
 function openTerminal(terminalInstance) {
@@ -192,9 +220,39 @@ function interpretTerminalCommand(process, command, output) {
     commandOutput("idfk", output);
   } else if (command === "clock") {
     clockMethod(process, output);
+  } else if (command === "neofetch") {
+    neofetch(process, output);
   } else {
     commandOutput("Unknown command", output);
   }
+}
+
+function neofetch(process, output) {
+  const logo = `
+                   -\`
+                  .o+\`
+                 \`ooo/
+                \`+oooo:
+               \`+oooooo:                 OS: <span style='color:white;'> LDOS x86_64</span>
+               -+oooooo+:                Host: <span style='color:white;'>RGSTROG Laptop 12</span>
+             \`/:-:++oooo+:               Kernel: <span style='color:white;'>DOM Vkernel</span>
+            \`/++++/+++++++:              Uptime: <span style='color:white;'>143 hours, 43 minutes</span>
+           \`/++++++++++++++:             Packages: <span style='color:white;'>3 (Pseudo Apt)</span>
+          \`/+++ooooooooooooo/\`           Shell: <span style='color:white;'>Lash 0.0.1</span>
+         ./ooosssso++osssssso+\`          Resolution: <span style='color:white;'>1920x1080</span>
+        .oossssso-\`\`\`\`/ossssss+\`         WM: <span style='color:white;'>LD Window Manager [Version 1.0]</span>
+       -osssssso.      :ssssssso.        Terminal: <span style='color:white;'>LD Terminal [Version 2.0]</span>
+      :osssssss/        osssso+++.       GPU: <span style='color:white;'>Intel TigerLake-H GT1 [UHD Graphics]</span>
+     /ossssssss/        +ssssooo/-       GPU: <span style='color:white;'>Geforce RTX 4090 TI</span>
+   \`/ossssso+/:-        -:/+osssso+-     Memory: <span style='color:white;'>4596Mib / 16000 Mb </span>
+  \`+sso+:-\`                 \`.-/+oso:
+ \`++:.                           \`-/+/
+ .\`                                 \`
+`;
+  console.log(logo);
+  //commandOutput(logo, process);
+  output.innerHTML += "<div style='color:lightblue; font-size:9px;'>" + logo +
+    "</div>";
 }
 
 function commandOutput(outputs, process) {

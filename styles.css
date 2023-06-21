@@ -13,6 +13,39 @@ button {
   border:none;
 }
 
+#profilebutton {
+  background-color:rgba(25,26,37,.70);
+  width:27px;
+  text-align:center;
+  height:20px;
+  border-radius:20px;
+  border: 2px solid hotpink;
+  margin-left:5px;
+}
+
+#workspacenumber {
+  border:2px solid hotpink;
+  display:inline-block;
+  background-color:rgba(40,32,56,.70);
+  text-align:center;
+  width:70px;
+  border-radius:20px;
+}
+
+#workspace2, #workspace3 {
+  color:rgba(255,255,255,.3);
+}
+
+#message {
+  border:2px solid hotpink;
+  display:inline-block;
+  font-size: 15px;
+  background-color:rgba(40,32,56,.70);
+  text-align:center;
+  width:325px;
+  border-radius:20px;
+}
+
 #LDbar {
   position:fixed;
   color:white;
@@ -20,10 +53,10 @@ button {
   top:0;
   left:0;
   width:99%;
-  height:20px;
+  height:25px;
   border-radius:6px;
-  margin:5px;
-  background-color:rgba(32,32,35,0.5);
+  margin:3px;
+  background-color:rgba(32,32,35,0);
   z-index:1;
 }
 
@@ -75,6 +108,7 @@ button {
   font-size: 15px;
   font-family: "iosevka";
   color:white;
+  white-space:pre;
   margin-left:2px;
 }
 
@@ -84,31 +118,38 @@ button {
 
 .fa-user {
   color:white;
-  margin-left:15px;
 }
 
 @keyframes slideDown {
   0% {
-    transform: translateY(-100%);
+    transform: translateY(-100%) translate(-50%,-50%);
   }
   100% {
-    transform: translateY(0);
+    transform: translateY(0) translate(-50%, -50%);
   }
 }
 
 #searchbar {
   display:none;
+  position:absolute;
   animation: 1s ease-out 0s 1 slideDown;
   animation-fill-mode: forwards;
   animation-play-state:paused;
   background-color:rgba(25,26,37,0.7);
   flex-direction: column;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
   padding:10px;
   height:500px;
   width:500px;
   border:2px solid white;
   border-radius:10px;
-  z-index:3;
+  z-index:4;
+}
+
+#chrome {
+  display:none;
 }
 
 .fa-magnifying-glass {
