@@ -222,6 +222,15 @@ function interpretTerminalCommand(process, command, output) {
     clockMethod(process, output);
   } else if (command === "neofetch") {
     neofetch(process, output);
+  } else if (command.split(" ")[0] === "wallpaper") {
+    const walpcmd = command.split(" ");
+    if (walpcmd.length === 1) {
+      commandOutput("1, 2, 3, 4, 5, 6, rainbow, cpu, 80", output);
+    } else {
+      document.body.style.backgroundImage = "url('./images/" + walpcmd[1] +
+        ".jpg')";
+      commandOutput("wallpaper updated.", output);
+    }
   } else {
     commandOutput("Unknown command", output);
   }
