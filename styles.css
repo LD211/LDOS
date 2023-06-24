@@ -152,6 +152,31 @@ button {
   display:none;
 }
 
+#linkbar {
+}
+
+#newsite {
+  width:60%;
+  border-radius:10px;
+  border:none;
+  outline:none;
+  background-color: rgba(61, 64, 76, .8);
+  color:white;
+  font-family: "iosevka";
+  margin-left:10%;
+  text-indent:3%;
+}
+
+#exitChrome {
+  right:1%;
+}
+
+#tabs {
+  border-bottom:1px solid white;
+  height:3%;
+  width:100%;
+}
+
 .fa-magnifying-glass {
   position:absolute;
   top:13px;

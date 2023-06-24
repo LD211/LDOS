@@ -1,5 +1,6 @@
 console.log("LDOS");
 let processCount = 0;
+let tabCount = 0;
 const desktop = document.getElementById("desktop");
 const chromeid = document.getElementById("chrome");
 const ldBar = document.getElementById("LDbar");
@@ -121,16 +122,42 @@ function openChrome(chromeInstance) {
   chromeInstance.style.position = "relative";
   chromeInstance.style.backgroundColor = "rgba(25,26,37,0.7)";
   chromeInstance.style.borderRadius = "6px";
-  chromeInstance.style.border = "1px solid white";
+  chromeInstance.style.border = "2px solid white";
   chromeInstance.style.color = "white";
   chromeInstance.style.zIndex = "2";
   chromeInstance.style.margin = "3px";
   document.body.appendChild(chromeInstance);
   processes.push(chromeInstance.id);
   tileProcess(document.getElementById(chromeInstance.id));
-  chromeInstance.querySelector("iframe").style.width = "100%";
-  chromeInstance.querySelector("iframe").style.height = "100%";
+  chromeInstance.querySelector("iframe").style.width = "99%";
+  chromeInstance.querySelector("iframe").style.height = "93%";
   chromeInstance.querySelector("iframe").focus();
+  openTab(chromeInstance);
+  chromeInstance.querySelector("input").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      chromeInstance.querySelector("iframe").src = "https://" +
+        chromeInstance.querySelector("input").value;
+      chromeInstance.querySelector("input").placeholder =
+        chromeInstance.querySelector("input").value;
+      chromeInstance.querySelector("input").value = "";
+    }
+  });
+}
+
+function openTab(chromeInstance) {
+  let tabs = chromeInstance.querySelector("#tabs");
+  console.log(tabs);
+  let tabButton = document.createElement("button");
+  tabButton.id = "tabcount" + tabCount;
+  tabButton.textContent = "tab";
+  console.log(tabButton);
+  console.log(tabButton.textContent);
+  tabButton.style.width = "50px";
+  tabButton.style.height = "90%";
+  tabButton.style.backgroundColor = "rgba(76, 80, 98, .5)";
+  tabButton.style.borderRadius = "30px";
+  tabButton.style.color = "white";
+  tabs.appendChild(tabButton);
 }
 
 function openTerminal(terminalInstance) {
@@ -138,7 +165,7 @@ function openTerminal(terminalInstance) {
   terminalInstance.style.position = "relative";
   terminalInstance.style.backgroundColor = "rgba(25,26,37,0.7)";
   terminalInstance.style.borderRadius = "6px";
-  terminalInstance.style.border = "1px solid white";
+  terminalInstance.style.border = "2px solid white";
   terminalInstance.style.color = "white";
   terminalInstance.style.zIndex = "2";
   terminalInstance.style.margin = "3px";
@@ -170,7 +197,7 @@ function openTerminal(terminalInstance) {
   });
   terminalText.addEventListener("focus", () => {
     document.getElementById(terminalInstance.id).style.border =
-      "1px solid white";
+      "2px solid white";
   });
   terminalText.addEventListener("blur", () => {
     document.getElementById(terminalInstance.id).style.border =
